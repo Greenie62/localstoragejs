@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <div class='container'>
+        <div class='row'>
+            <div class='col-md-3'></div>
+            <div class='col-md-6'>
+                <div class='jumbotron mb-2 text-center bg-primary text-white'>
+                    <h1 id="title">Justins</h1>
+                    <h2 id='title'>Javascript Bookmark site</h2>
+                
+                <form>
+                    <label>Site Name:</label>
+                    <input type='text' id='sitename' class='form-control'>
+                    <label>Site Url:</label>
+                    <input type='text' id='siteurl' class='form-control'>
+                    <input type='submit' value='submit' class='bg-secondary mt-2'>
+                </form>
+                </div>
+            </div>
+            <div class='col-md-3'></div>
+        </div>
+        <div class='row'>
+            <div class='col-md-2'></div>
+            <div class='col-md-8'>
+                <div class='card card-body'>
+                    <ul id='linklist' class='list-group'>
+         
+                    </ul>
+                </div>
+            </div>
+            <div class='col-md-2'></div>
+        </div>
+    </div>
+
+    <footer id='footer' class='bg-primary text-white text-center'>
+        Footer &copy;
+    </footer>
+  
+
+    <script>
+
+        var links=JSON.parse(localStorage.getItem("links")) || []
+        document.body.onload=function(){
+            JSON.parse(localStorage.getItem("links"))
+           
+            for(var i=0;i<links.length;i++){
+            var li=document.createElement("li");
+            li.className="list-group-item"
+            li.setAttribute("value",links[i].url)
+            li.setAttribute("name",links[i].name)
+            li.appendChild(document.createTextNode(links[i].name))
+            var goToSpan=document.createElement("span")
+            goToSpan.className='badge badge-success float-right visit'
+            goToSpan.appendChild(document.createTextNode("Visit"))
+            var deleteSpan=document.createElement("span");
+            deleteSpan.className="badge badge-danger float-right mr-2 delete";
+            deleteSpan.appendChild(document.createTextNode("Delete"))
+            li.appendChild(goToSpan);
+            li.appendChild(deleteSpan);
+           
+            
+            linkList.appendChild(li)
+            }
+
+            
+        }
+        
+        
+        document.body.style.backgroundColor="#999" 
+        var linkList=document.querySelector("#linklist");
+        linkList.addEventListener("click",visitSite)
+
+        function visitSite(e){
+            if(e.target.classList.contains('visit')){
+                console.log(e.target.parentElement.getAttribute("value"))
+                var site=e.target.parentElement.getAttribute("value")
+                window.location.replace(site)
+            }
+        }
+
+        var submit=document.querySelector("input[type='submit']")
+
+        submit.addEventListener('click',addLink)
+
+        function addLink(e){
+           
+            e.preventDefault();
+            var siteName=document.querySelector("#sitename").value
+            var siteurl=document.querySelector("#siteurl").value
+            var site={
+                name:siteName,
+                url:siteurl
+            }
+            // we have our input values, now create necessary elements
+            var li=document.createElement("li");
+            li.className="list-group-item"
+            li.setAttribute("value",siteurl)
+            li.setAttribute('name',siteName)
+            li.appendChild(document.createTextNode(siteName))
+            var goToSpan=document.createElement("span")
+            goToSpan.className='badge badge-success float-right visit'
+            goToSpan.appendChild(document.createTextNode("Visit"))
+            var deleteSpan=document.createElement("span");
+            deleteSpan.className="badge badge-danger float-right mr-2 delete";
+            deleteSpan.appendChild(document.createTextNode("Delete"))
+            li.appendChild(goToSpan);
+            li.appendChild(deleteSpan);
+           
+            console.log(li)
+            linkList.appendChild(li)
+            links.push(site)
+            localStorage.setItem("links",JSON.stringify(links))
+            console.log("link was put into LS")
+
+    
+      
+   
+        }
+
+        linkList.addEventListener('click',removeLink)
+
+        function removeLink(e){
+             if(e.target.classList.contains("delete")){
+                 //target parent element so we can remove from the DOM
+                 var li=e.target.parentNode;
+                 console.log(li)
+                 linkList.removeChild(li)
+
+                 //pull localstorage data out and store into array
+                 var links=JSON.parse(localStorage.getItem("links"))
+               
+                  //run localstorage array thru for-loop, get just names
+                var sitenames=[];
+                for(var i=0;i<links.length;i++){
+                    sitenames.push(links[i].name)
+                }
+                //get clicked on to remove elements name value to run against
+                //indexOf method
+                var siteName=e.target.parentElement.getAttribute("name");
+               
+                
+             
+                
+                 var i=links.indexOf(siteName)
+             
+                 links.splice(i,1)
+                 console.log(links)
+                 localStorage.setItem("links",JSON.stringify(links))
+                 location.reload()
+             } 
+        }
+
+       
+   document.querySelector("#title").addEventListener("mouseenter",function(e){
+       e.target.style.color='lightgreen'
+   })
+
+   var titles=document.querySelectorAll("#title")
+
+   for(var i=0;i<titles.length;i++){
+       titles[i].addEventListener('mouseenter',(e)=>{
+           e.target.style.color='lightgreen'
+       })
+       titles[i].addEventListener('mouseleave',(e)=>{
+           e.target.style.color='white'
+       })
+   }
+
+   
+   document.querySelector(".card-body").style.backgroundColor='lemonchiffon'
+   
+    
+    
+    </script>
+</body>
+</html>
